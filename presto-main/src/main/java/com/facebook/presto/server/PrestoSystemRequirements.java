@@ -125,8 +125,7 @@ final class PrestoSystemRequirements
         OptionalLong maxFileDescriptorCount = getMaxFileDescriptorCount();
         if (!maxFileDescriptorCount.isPresent()) {
             String osName = StandardSystemProperty.OS_NAME.value();
-            if (osName.startsWith("Windows"))
-            {
+            if (osName.startsWith("Windows")) {
                 warnRequirement("Cannot read OS file descriptor limit on Windows");
                 return;
             }
