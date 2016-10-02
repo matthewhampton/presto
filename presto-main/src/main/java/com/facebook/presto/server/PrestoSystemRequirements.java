@@ -64,8 +64,13 @@ final class PrestoSystemRequirements
                 failRequirement("Presto requires x86_64 on Mac OS X (found %s)", osArch);
             }
         }
+        else if (osName.startsWith("Windows")) {
+            if (!osArch.equalsIgnoreCase("amd64")) {
+                failRequirement("Presto requires amd64 on Windows (found %s)", osArch);
+            }
+        }
         else {
-            failRequirement("Presto requires Linux or Mac OS X (found %s)", osName);
+            failRequirement("Presto requires Windows, Linux or Mac OS X (found %s)", osName);
         }
 
         if (!ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN)) {
@@ -119,6 +124,12 @@ final class PrestoSystemRequirements
     {
         OptionalLong maxFileDescriptorCount = getMaxFileDescriptorCount();
         if (!maxFileDescriptorCount.isPresent()) {
+            String osName = StandardSystemProperty.OS_NAME.value();
+            if (osName.startsWith("Windows"))
+            {
+                warnRequirement("Cannot read OS file descriptor limit on Windows");
+                return;
+            }
             // This should never happen since we have verified the OS and JVM above
             failRequirement("Cannot read OS file descriptor limit");
         }
